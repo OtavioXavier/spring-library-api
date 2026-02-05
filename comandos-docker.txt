@@ -1,0 +1,5 @@
+# Subir container postgres na versão 16
+docker run --name librarydb -p 5433:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=library postgres:16
+
+# Rodar pgadmin4
+docker run --name pgadmin4 -p 15433:80 -e ADMIN_DEFAULT_PASSWORD=admin -e ADMIN_DEFAULT_EMAIL=admin@admin.com dpage/pgadmin4:9.12.0
