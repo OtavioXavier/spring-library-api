@@ -112,5 +112,14 @@ class LivroRepositoryTest {
         assertTrue(ids.contains(livro2.getId()));
     }
 
+    @Test
+    void deveDeletarLivroPorId() {
+        Livro livro = makeLivro();
+        var livroSalvo = repository.save(livro);
+        repository.deleteById(livroSalvo.getId());
+        var livroEncontrado = repository.findById(livroSalvo.getId()).orElse(null);
+        assertNull(livroEncontrado);
+    }
+
 
 }
