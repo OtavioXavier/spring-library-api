@@ -51,6 +51,19 @@ public class AutorRepositoryTest {
     }
 
     @Test
+    public void deveBuscarPorId() {
+        Autor autor = new Autor();
+        autor.setNome("Otavio");
+        autor.setNacionalidade("Brasileiro");
+        autor.setDataNascimento(LocalDate.of(2005, 5, 13));
+        var autorSalvo = repository.save(autor);
+        var autorBuscado = repository.findById(autorSalvo.getId()).orElse(null);
+
+        assertNotNull(autorBuscado);
+        assertEquals(autorSalvo, autorBuscado);
+    }
+
+    @Test
     public void deveApagarPorId() {
         Autor autor = new Autor();
         autor.setNome("Otavio");
