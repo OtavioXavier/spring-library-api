@@ -18,12 +18,17 @@ public class AutorRepositoryTest {
     @Autowired
     AutorRepository repository;
 
-    @Test
-    public void deveSalvar() {
+    Autor makeAutor() {
         Autor autor = new Autor();
         autor.setNome("Otavio");
         autor.setNacionalidade("Brasileiro");
         autor.setDataNascimento(LocalDate.of(2005, 5, 13));
+        return autor;
+    }
+
+    @Test
+    public void deveSalvar() {
+        Autor autor = makeAutor();
 
         var autorSalvo = repository.save(autor);
         assertNotNull(autorSalvo);
@@ -31,10 +36,7 @@ public class AutorRepositoryTest {
 
     @Test
     public void deveAtualizar() {
-        Autor autor = new Autor();
-        autor.setNome("Otavio");
-        autor.setNacionalidade("Brasileiro");
-        autor.setDataNascimento(LocalDate.of(2005, 5, 13));
+        Autor autor = makeAutor();
         var autorSalvo = repository.save(autor);
 
         autorSalvo.setNome("nome atualizado");
@@ -52,10 +54,7 @@ public class AutorRepositoryTest {
 
     @Test
     public void deveBuscarPorId() {
-        Autor autor = new Autor();
-        autor.setNome("Otavio");
-        autor.setNacionalidade("Brasileiro");
-        autor.setDataNascimento(LocalDate.of(2005, 5, 13));
+        Autor autor = makeAutor();
         var autorSalvo = repository.save(autor);
         var autorBuscado = repository.findById(autorSalvo.getId()).orElse(null);
 
@@ -65,10 +64,7 @@ public class AutorRepositoryTest {
 
     @Test
     public void deveApagarPorId() {
-        Autor autor = new Autor();
-        autor.setNome("Otavio");
-        autor.setNacionalidade("Brasileiro");
-        autor.setDataNascimento(LocalDate.of(2005, 5, 13));
+        Autor autor = makeAutor();
 
         var autorSalvo = repository.save(autor);
 
