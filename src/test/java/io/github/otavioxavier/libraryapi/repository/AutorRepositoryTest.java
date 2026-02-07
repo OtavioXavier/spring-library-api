@@ -1,15 +1,12 @@
 package io.github.otavioxavier.libraryapi.repository;
 
 import io.github.otavioxavier.libraryapi.model.Autor;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,24 +24,21 @@ public class AutorRepositoryTest {
         autor.setDataNascimento(LocalDate.of(2005, 05, 13));
 
         var autorSalvo = repository.save(autor);
-        System.out.println("Salvo com sucesso: " + autorSalvo);
+        assertNotNull(autorSalvo);
     }
 
     @Test
     public void deveAtualizar() {
-        var id = UUID.fromString("c4e16b16-32dd-44aa-a783-4b251fe30210");
+        Autor autor = new Autor();
+        autor.setNome("Otavio");
+        autor.setNacionalidade("Brasileiro");
+        autor.setDataNascimento(LocalDate.of(2005, 05, 13));
+        var autorSalvo = repository.save(autor);
 
-        Optional<Autor> optional = repository.findById(id);
+        autorSalvo.setNome("nome atualizado");
+        var autorAtualizado = repository.save(autorSalvo);
 
-        if(optional.isPresent()) {
-            Autor autorEncontrado = optional.get();
-            System.out.println("Autor encontrado: " + autorEncontrado.getNome());
-
-            autorEncontrado.setNome("Atualiza de verdade");
-
-            repository.save(autorEncontrado);
-        }
-
+        assertEquals("nome atualizado", autorAtualizado.getNome());
     }
 
     @Test
