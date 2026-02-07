@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 public class AutorRepositoryTest {
@@ -45,4 +47,12 @@ public class AutorRepositoryTest {
         }
 
     }
+
+    @Test
+    public void deveListar() {
+        List<Autor> lista;
+        lista = repository.findAll();
+        assertNotNull(lista);
+    }
+
 }
