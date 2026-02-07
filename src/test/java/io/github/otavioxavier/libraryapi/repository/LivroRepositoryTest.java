@@ -20,7 +20,7 @@ class LivroRepositoryTest {
 
     @Autowired
     LivroRepository repository;
-    
+
     Livro makeLivro() {
         Livro livro = new Livro();
         Autor autor = new Autor();
@@ -45,6 +45,20 @@ class LivroRepositoryTest {
 
         assertNotNull(livroSalvo);
         assertEquals(livro.getIsbn(), livroSalvo.getIsbn());
+    }
+
+    @Test
+    void deveAtualizarLivro() {
+        Livro livro = makeLivro();
+
+        var livroSalvo = repository.save(livro);
+
+        livroSalvo.setTitulo("Titulo atualizado");
+        var livroAtualizado = repository.save(livroSalvo);
+
+        assertNotNull(livroAtualizado);
+        assertEquals(livroAtualizado.getId(), livroSalvo.getId());
+        assertEquals("Titulo atualizado", livroAtualizado.getTitulo());
     }
 
 
