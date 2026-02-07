@@ -10,9 +10,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -20,6 +22,18 @@ class LivroRepositoryTest {
 
     @Autowired
     LivroRepository repository;
+
+    @Autowired
+    AutorRepository autorRepository;
+
+    Autor makeAutor() {
+        Autor autor = new Autor();
+        autor.setNome("Otavio");
+        autor.setNacionalidade("Brasileiro");
+        autor.setDataNascimento(LocalDate.of(2005, 5, 13));
+        autorRepository.save(autor);
+        return autor;
+    }
 
     Livro makeLivro() {
         Livro livro = new Livro();
@@ -59,6 +73,43 @@ class LivroRepositoryTest {
         assertNotNull(livroAtualizado);
         assertEquals(livroAtualizado.getId(), livroSalvo.getId());
         assertEquals("Titulo atualizado", livroAtualizado.getTitulo());
+    }
+
+    @Test
+    void deveBuscarPorId() {
+        Livro livro = makeLivro();
+
+        var livroSalvo = repository.save(livro);
+
+        var livroEncontrado = repository.findById(livroSalvo.getId()).orElse(null);
+
+        assertNotNull(livroEncontrado);
+        assertEquals(livroEncontrado, livroSalvo);
+    }
+
+    @Test
+    void deveListarTodosLivros() {
+        Livro livro1 = makeLivro();
+        livro1.setAutor(makeAutor());
+
+        Livro livro2 = makeLivro();
+        livro2.setIsbn("90887-0000");
+        livro2.setAutor(makeAutor());
+
+        repository.save(livro1);
+        repository.save(livro2);
+
+        List<Livro> livros = repository.findAll();
+
+        assertNotNull(livros);
+        assertEquals(2, livros.size());
+
+        List<UUID> ids = livros.stream()
+                .map(Livro::getId)
+                .toList();
+
+        assertTrue(ids.contains(livro1.getId()));
+        assertTrue(ids.contains(livro2.getId()));
     }
 
 
