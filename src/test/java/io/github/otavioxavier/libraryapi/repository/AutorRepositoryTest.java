@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,5 +27,22 @@ public class AutorRepositoryTest {
 
         var autorSalvo = repository.save(autor);
         System.out.println("Salvo com sucesso: " + autorSalvo);
+    }
+
+    @Test
+    public void deveAtualizar() {
+        var id = UUID.fromString("c4e16b16-32dd-44aa-a783-4b251fe30210");
+
+        Optional<Autor> optional = repository.findById(id);
+
+        if(optional.isPresent()) {
+            Autor autorEncontrado = optional.get();
+            System.out.println("Autor encontrado: " + autorEncontrado.getNome());
+
+            autorEncontrado.setNome("Atualiza de verdade");
+
+            repository.save(autorEncontrado);
+        }
+
     }
 }
