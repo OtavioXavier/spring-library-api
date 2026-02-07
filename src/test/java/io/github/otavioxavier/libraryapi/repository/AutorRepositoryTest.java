@@ -49,7 +49,7 @@ public class AutorRepositoryTest {
     }
 
     @Test
-    public void deveApagar() {
+    public void deveApagarPorId() {
         Autor autor = new Autor();
         autor.setNome("Otavio");
         autor.setNacionalidade("Brasileiro");
