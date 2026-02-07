@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class AutorRepositoryTest {
@@ -53,6 +52,22 @@ public class AutorRepositoryTest {
         List<Autor> lista;
         lista = repository.findAll();
         assertNotNull(lista);
+    }
+
+    @Test
+    public void deveApagar() {
+        Autor autor = new Autor();
+        autor.setNome("Otavio");
+        autor.setNacionalidade("Brasileiro");
+        autor.setDataNascimento(LocalDate.of(2005, 05, 13));
+
+        var autorSalvo = repository.save(autor);
+
+        repository.deleteById(autorSalvo.getId());
+
+        var deletedUser = repository.findById(autor.getId()).orElse(null);
+
+        assertNull(deletedUser);
     }
 
 }
