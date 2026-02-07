@@ -3,14 +3,16 @@ package io.github.otavioxavier.libraryapi.repository;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@DataJpaTest()
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AutorRepositoryTest {
 
     @Autowired
@@ -21,7 +23,7 @@ public class AutorRepositoryTest {
         Autor autor = new Autor();
         autor.setNome("Otavio");
         autor.setNacionalidade("Brasileiro");
-        autor.setDataNascimento(LocalDate.of(2005, 05, 13));
+        autor.setDataNascimento(LocalDate.of(2005, 5, 13));
 
         var autorSalvo = repository.save(autor);
         assertNotNull(autorSalvo);
@@ -32,7 +34,7 @@ public class AutorRepositoryTest {
         Autor autor = new Autor();
         autor.setNome("Otavio");
         autor.setNacionalidade("Brasileiro");
-        autor.setDataNascimento(LocalDate.of(2005, 05, 13));
+        autor.setDataNascimento(LocalDate.of(2005, 5, 13));
         var autorSalvo = repository.save(autor);
 
         autorSalvo.setNome("nome atualizado");
@@ -53,7 +55,7 @@ public class AutorRepositoryTest {
         Autor autor = new Autor();
         autor.setNome("Otavio");
         autor.setNacionalidade("Brasileiro");
-        autor.setDataNascimento(LocalDate.of(2005, 05, 13));
+        autor.setDataNascimento(LocalDate.of(2005, 5, 13));
 
         var autorSalvo = repository.save(autor);
 
