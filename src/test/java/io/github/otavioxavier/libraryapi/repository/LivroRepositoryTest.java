@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -118,6 +120,27 @@ class LivroRepositoryTest {
         repository.deleteById(livroSalvo.getId());
         var livroEncontrado = repository.findById(livroSalvo.getId()).orElse(null);
         assertNull(livroEncontrado);
+    }
+
+    @Test
+    void deveListarTodosLivrosPorAutor() {
+        var mesmoAutor = makeAutor();
+        Livro livro1 = makeLivro();
+        livro1.setAutor(mesmoAutor);
+        repository.save(livro1);
+
+        Livro livro2 = makeLivro();
+        livro2.setAutor(mesmoAutor);
+        repository.save(livro2);
+
+        List<Livro> livrosSalvos = repository.findByAutor(mesmoAutor);
+
+        assertFalse(livrosSalvos.isEmpty());
+
+        boolean todosDoMesmoAutor = livrosSalvos.stream()
+                .allMatch(livro -> livro.getAutor().getId().equals(mesmoAutor.getId()));
+
+        assertTrue(todosDoMesmoAutor);
     }
 
 

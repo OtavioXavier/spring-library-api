@@ -2,6 +2,7 @@ package io.github.otavioxavier.libraryapi.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name="autor", schema = "public")
 @Data
+@ToString(exclude="livros")
 public class Autor {
 
     @Id
