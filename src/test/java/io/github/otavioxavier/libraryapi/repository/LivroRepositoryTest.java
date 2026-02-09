@@ -143,5 +143,28 @@ class LivroRepositoryTest {
         assertTrue(todosDoMesmoAutor);
     }
 
+    @Test
+    void deveListarTodosLivrosPorTitulo() {
+        var mesmoTitulo = "O hobbit: Uma aventura na terra média";
+        Livro livro1 = makeLivro();
+        livro1.setTitulo(mesmoTitulo);
+        livro1.setAutor(makeAutor());
+        repository.save(livro1);
+
+        Livro livro2 = makeLivro();
+        livro2.setTitulo(mesmoTitulo);
+        livro2.setAutor(makeAutor());
+        repository.save(livro2);
+
+        List<Livro> livrosSalvos = repository.findByTitulo(mesmoTitulo);
+
+        assertFalse(livrosSalvos.isEmpty());
+
+        boolean todosDoMesmoTitulo = livrosSalvos.stream()
+                .allMatch(livro -> livro.getTitulo().equals(mesmoTitulo));
+
+        assertTrue(todosDoMesmoTitulo);
+    }
+
 
 }
