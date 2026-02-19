@@ -50,7 +50,7 @@ public class AutorServiceTest {
         service.saveAutor(autor);
         when(repository.findById(autor.getId())).thenReturn(Optional.of(autor));
 
-        Autor autorEncontrado = repository.findById(autor.getId()).orElse(null);
+        Autor autorEncontrado = service.obterPorId(autor.getId()).orElse(null);
         assertNotNull(autorEncontrado);
     }
 
@@ -59,7 +59,7 @@ public class AutorServiceTest {
         UUID idInexistente = UUID.randomUUID();
         when(repository.findById(idInexistente)).thenReturn(Optional.empty());
 
-        Autor autorEncontrado = repository.findById(idInexistente).orElse(null);
+        Autor autorEncontrado = service.obterPorId(idInexistente).orElse(null);
         assertNull(autorEncontrado);
     }
 }
