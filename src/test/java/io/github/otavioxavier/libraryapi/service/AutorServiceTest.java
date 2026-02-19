@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,5 +52,14 @@ public class AutorServiceTest {
 
         Autor autorEncontrado = repository.findById(autor.getId()).orElse(null);
         assertNotNull(autorEncontrado);
+    }
+
+    @Test
+    public void DeveRetornarNullSeNaoExistir() {
+        UUID idInexistente = UUID.randomUUID();
+        when(repository.findById(idInexistente)).thenReturn(Optional.empty());
+
+        Autor autorEncontrado = repository.findById(idInexistente).orElse(null);
+        assertNull(autorEncontrado);
     }
 }
