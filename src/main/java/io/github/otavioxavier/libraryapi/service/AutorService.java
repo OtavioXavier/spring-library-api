@@ -3,6 +3,10 @@ package io.github.otavioxavier.libraryapi.service;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.repository.AutorRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AutorService {
@@ -16,6 +20,10 @@ public class AutorService {
 
     public Autor saveAutor(Autor autor) {
         return repository.save(autor);
+    }
+
+    public Optional<Autor> obterPorId(UUID id) {
+        return repository.findById(id);
     }
 
 }
