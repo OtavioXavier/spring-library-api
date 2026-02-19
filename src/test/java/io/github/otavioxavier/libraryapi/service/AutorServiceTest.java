@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AutorServiceTest {
@@ -61,5 +61,14 @@ public class AutorServiceTest {
 
         Autor autorEncontrado = service.obterPorId(idInexistente).orElse(null);
         assertNull(autorEncontrado);
+    }
+
+    @Test
+    public void DeveDeletarAutor() {
+        UUID idExistente = UUID.randomUUID();
+
+        service.deletar(idExistente);
+
+        verify(repository).deleteById(idExistente);
     }
 }
