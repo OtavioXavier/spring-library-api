@@ -27,7 +27,7 @@ public class AutorController {
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("{id}")
+                .path("/{id}")
                 .buildAndExpand(autor.getId())
                 .toUri();
 
