@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -35,5 +36,19 @@ public class AutorServiceTest {
 
         assertNotNull(autorSalvo);
 
+    }
+
+    @Test
+    public void DeveRetornarAutorSeExistir() {
+        Autor autor = new Autor();
+        autor.setNome("Jhon V.");
+        autor.setNacionalidade("Brasileiro");
+        autor.setDataNascimento(LocalDate.of(1980, 1, 1));
+
+        service.saveAutor(autor);
+        when(repository.findById(autor.getId())).thenReturn(Optional.of(autor));
+
+        Autor autorEncontrado = repository.findById(autor.getId()).orElse(null);
+        assertNotNull(autorEncontrado);
     }
 }
