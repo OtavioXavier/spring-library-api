@@ -3,7 +3,6 @@ package io.github.otavioxavier.libraryapi.controller;
 import io.github.otavioxavier.libraryapi.controller.dto.AutorDTO;
 import io.github.otavioxavier.libraryapi.controller.dto.AutorResponseDTO;
 import io.github.otavioxavier.libraryapi.model.Autor;
-import io.github.otavioxavier.libraryapi.repository.AutorRepository;
 import io.github.otavioxavier.libraryapi.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +40,19 @@ public class AutorController {
         if(autor != null) {
             AutorResponseDTO dto = new AutorResponseDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade());
             return ResponseEntity.ok(dto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deletar(@PathVariable String id) {
+        UUID autorId = UUID.fromString(id);
+        Autor autor = service.obterPorId(autorId).orElse(null);
+
+        if(autor != null) {
+            service.deletar(autorId);
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
         }
