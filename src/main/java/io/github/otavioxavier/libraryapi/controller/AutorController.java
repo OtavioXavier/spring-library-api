@@ -1,18 +1,17 @@
 package io.github.otavioxavier.libraryapi.controller;
 
 import io.github.otavioxavier.libraryapi.controller.dto.AutorDTO;
+import io.github.otavioxavier.libraryapi.controller.dto.AutorResponseDTO;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.repository.AutorRepository;
 import io.github.otavioxavier.libraryapi.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/autores")
@@ -32,5 +31,18 @@ public class AutorController {
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<AutorResponseDTO> obterDetalhes(@PathVariable String id) {
+        UUID autorId = UUID.fromString(id);
+        Autor autor = service.obterPorId(autorId).orElse(null);
+
+        if(autor != null) {
+            AutorResponseDTO dto = new AutorResponseDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade());
+            return ResponseEntity.ok(dto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
