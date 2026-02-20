@@ -81,7 +81,7 @@ public class AutorController {
             @PathVariable(value = "nome", required = false) String nome,
             @PathVariable(value = "nacionalidade", required = false) String nacionalidade
     ) {
-        List<Autor> list = service.pesquisar(nome, nacionalidade);
+        List<Autor> list = service.pesquisarPorExemplo(nome, nacionalidade);
         List<AutorResponseDTO> listDTO = list
                 .stream()
                 .map(autor -> new AutorResponseDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade()))

@@ -5,6 +5,8 @@ import io.github.otavioxavier.libraryapi.repository.AutorRepository;
 import io.github.otavioxavier.libraryapi.validator.AutorTemLivrosValidator;
 import io.github.otavioxavier.libraryapi.validator.AutorValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,20 +36,19 @@ public class AutorService {
         repository.delete(autor);
     }
 
-    public List<Autor> pesquisar(String nome, String nacionalidade) {
-        if (nome != null && nacionalidade != null) {
-            return repository.findByNomeAndNacionalidade(nome, nacionalidade);
-        }
+    public List<Autor> pesquisarPorExemplo(String nome, String nacionalidade) {
+        Autor autor = new Autor();
+        autor.setNome(nome);
+        autor.setNacionalidade(nacionalidade);
 
-        if (nome != null) {
-            return repository.findByNome(nome);
-        }
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example<Autor> autorExample = Example.of(autor, matcher);
 
-        if (nacionalidade != null) {
-            return repository.findByNacionalidade(nacionalidade);
-        }
-
-        return repository.findAll();
+        return repository.findAll(autorExample);
     }
 
     public void atualizar(Autor autor) {
