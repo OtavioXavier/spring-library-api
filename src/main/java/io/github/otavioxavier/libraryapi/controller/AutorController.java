@@ -91,7 +91,7 @@ public class AutorController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Object> editar(@PathVariable String id, @RequestBody AutorDTO dto) {
+    public ResponseEntity<Object> editar(@PathVariable String id, @RequestBody @Valid AutorDTO dto) {
         try {
             UUID autorId = UUID.fromString(id);
             Autor autor = service.obterPorId(autorId).orElse(null);
