@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -57,5 +58,27 @@ public class AutorValidatorTest {
                 RegistroDuplicadoException.class,
                 () -> validator.validar(autor)
         );
+    }
+
+    @Test
+    void devePermitirAtualizacaoQuandoForMesmoId() {
+        UUID id = UUID.randomUUID();
+
+        Autor autor = new Autor();
+        autor.setId(id);
+        autor.setNome("João");
+        autor.setNacionalidade("Brasileiro");
+        autor.setDataNascimento(LocalDate.of(1990, 1, 1));
+
+        Autor autorBanco = new Autor();
+        autorBanco.setId(id);
+
+        when(repository.findByNomeAndNacionalidadeAnDataNascimento(
+                autor.getNome(),
+                autor.getNacionalidade(),
+                autor.getDataNascimento()
+        )).thenReturn(Optional.of(autorBanco));
+
+        assertDoesNotThrow(() -> validator.validar(autor));
     }
 }
