@@ -2,6 +2,8 @@ package io.github.otavioxavier.libraryapi.controller;
 
 import io.github.otavioxavier.libraryapi.controller.dto.AutorDTO;
 import io.github.otavioxavier.libraryapi.controller.dto.AutorResponseDTO;
+import io.github.otavioxavier.libraryapi.controller.error.ErroResposta;
+import io.github.otavioxavier.libraryapi.exception.RegistroDuplicadoException;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +24,21 @@ public class AutorController {
     private AutorService service;
 
     @PostMapping
-    public ResponseEntity<Void> createAutor(@RequestBody AutorDTO dto) {
-        Autor autor = service.saveAutor(dto.mapearParaAutor());
+    public ResponseEntity<Object> createAutor(@RequestBody AutorDTO dto) {
+        try {
+            Autor autor = service.saveAutor(dto.mapearParaAutor());
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(autor.getId())
-                .toUri();
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(autor.getId())
+                    .toUri();
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        } catch (RegistroDuplicadoException e) {
+            var erroDTO = ErroResposta.conflito(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
     }
 
     @GetMapping("{id}")
