@@ -1,5 +1,6 @@
 package io.github.otavioxavier.libraryapi.validator;
 
+import io.github.otavioxavier.libraryapi.exception.OperacaoNaoPermitidaException;
 import io.github.otavioxavier.libraryapi.exception.RegistroDuplicadoException;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.repository.AutorRepository;
@@ -10,7 +11,7 @@ import java.util.Optional;
 @Component
 public class AutorValidator {
 
-    private AutorRepository autorRepository;
+    private final AutorRepository autorRepository;
 
     public AutorValidator(AutorRepository autorRepository) {
         this.autorRepository = autorRepository;
