@@ -3,6 +3,7 @@ package io.github.otavioxavier.libraryapi.controller;
 import io.github.otavioxavier.libraryapi.controller.dto.AutorDTO;
 import io.github.otavioxavier.libraryapi.controller.dto.AutorResponseDTO;
 import io.github.otavioxavier.libraryapi.controller.error.ErroResposta;
+import io.github.otavioxavier.libraryapi.exception.OperacaoNaoPermitidaException;
 import io.github.otavioxavier.libraryapi.exception.RegistroDuplicadoException;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.service.AutorService;
@@ -55,15 +56,22 @@ public class AutorController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletar(@PathVariable String id) {
+    public ResponseEntity<Object> deletar(@PathVariable String id) {
+        try {
+
+
         UUID autorId = UUID.fromString(id);
         Autor autor = service.obterPorId(autorId).orElse(null);
 
         if(autor != null) {
-            service.deletar(autorId);
+            service.deletar(autor);
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
+        }
+        } catch (OperacaoNaoPermitidaException e) {
+            var  erroDTO = ErroResposta.conflito(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
     }
 

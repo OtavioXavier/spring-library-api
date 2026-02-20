@@ -2,6 +2,7 @@ package io.github.otavioxavier.libraryapi.service;
 
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.repository.AutorRepository;
+import io.github.otavioxavier.libraryapi.validator.AutorTemLivrosValidator;
 import io.github.otavioxavier.libraryapi.validator.AutorValidator;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,12 @@ public class AutorService {
 
     private final AutorRepository repository;
     private final AutorValidator validator;
+    private final AutorTemLivrosValidator temLivrosValidator;
 
-    public AutorService(AutorRepository repository,  AutorValidator validator) {
+    public AutorService(AutorRepository repository, AutorValidator validator, AutorTemLivrosValidator temLivrosValidator) {
         this.repository = repository;
         this.validator = validator;
+        this.temLivrosValidator = temLivrosValidator;
     }
 
 
@@ -30,20 +33,21 @@ public class AutorService {
         return repository.findById(id);
     }
 
-    public void deletar(UUID id) {
-        repository.deleteById(id);
+    public void deletar(Autor autor) {
+        temLivrosValidator.validar(autor);
+        repository.delete(autor);
     }
 
     public List<Autor> pesquisar(String nome, String nacionalidade) {
-        if(nome != null && nacionalidade != null) {
+        if (nome != null && nacionalidade != null) {
             return repository.findByNomeAndNacionalidade(nome, nacionalidade);
         }
 
-        if(nome != null) {
+        if (nome != null) {
             return repository.findByNome(nome);
         }
 
-        if(nacionalidade != null) {
+        if (nacionalidade != null) {
             return repository.findByNacionalidade(nacionalidade);
         }
 
@@ -52,7 +56,8 @@ public class AutorService {
 
     public void atualizar(Autor autor) {
         validator.validar(autor);
-        if(autor.getId() == null) throw new IllegalArgumentException("Para atualizar é necessário que o autor já esteja salvo na base de dados.");
+        if (autor.getId() == null)
+            throw new IllegalArgumentException("Para atualizar é necessário que o autor já esteja salvo na base de dados.");
 
         repository.save(autor);
     }
