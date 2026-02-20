@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/autores")
@@ -56,5 +58,19 @@ public class AutorController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AutorResponseDTO>> listar(
+            @PathVariable(value = "nome", required = false) String nome,
+            @PathVariable(value = "nacionalidade", required = false) String nacionalidade
+    ) {
+        List<Autor> list = service.pesquisar(nome, nacionalidade);
+        List<AutorResponseDTO> listDTO = list
+                .stream()
+                .map(autor -> new AutorResponseDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(listDTO);
     }
 }
