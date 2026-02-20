@@ -10,11 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,5 +70,63 @@ public class AutorServiceTest {
         service.deletar(idExistente);
 
         verify(repository).deleteById(idExistente);
+    }
+
+    @Test
+    public void devePesquisarPorNomeENacionalidade() {
+        String nome = "João";
+        String nacionalidade = "Brasileiro";
+
+        List<Autor> listaMock = List.of(new Autor());
+
+        when(repository.findByNomeAndNacionalidade(nome, nacionalidade))
+                .thenReturn(listaMock);
+
+        List<Autor> resultado = service.pesquisar(nome, nacionalidade);
+
+        assertEquals(1, resultado.size());
+        verify(repository).findByNomeAndNacionalidade(nome, nacionalidade);
+    }
+
+    @Test
+    public void devePesquisarApenasPorNome() {
+        String nome = "João";
+
+        List<Autor> listaMock = List.of(new Autor());
+
+        when(repository.findByNome(nome))
+                .thenReturn(listaMock);
+
+        List<Autor> resultado = service.pesquisar(nome, null);
+
+        assertEquals(1, resultado.size());
+        verify(repository).findByNome(nome);
+    }
+
+    @Test
+    public void devePesquisarApenasPorNacionalidade() {
+        String nacionalidade = "Brasileiro";
+
+        List<Autor> listaMock = List.of(new Autor());
+
+        when(repository.findByNacionalidade(nacionalidade))
+                .thenReturn(listaMock);
+
+        List<Autor> resultado = service.pesquisar(null, nacionalidade);
+
+        assertEquals(1, resultado.size());
+        verify(repository).findByNacionalidade(nacionalidade);
+    }
+
+    @Test
+    public void deveRetornarTodosQuandoFiltrosForemNulos() {
+        List<Autor> listaMock = List.of(new Autor(), new Autor());
+
+        when(repository.findAll()).thenReturn(listaMock);
+
+        List<Autor> resultado = service.pesquisar(null, null);
+
+        assertEquals(2, resultado.size());
+        verify(repository).findAll();
     }
 }
