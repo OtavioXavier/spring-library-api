@@ -129,4 +129,37 @@ public class AutorServiceTest {
         assertEquals(2, resultado.size());
         verify(repository).findAll();
     }
+
+    @Test
+    public void deveLancarExcecaoQuandoIdForNull() {
+        Autor autor = new Autor();
+        autor.setNome("João");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.atualizar(autor)
+        );
+
+        assertEquals(
+                "Para atualizar é necessário que o autor já esteja salvo na base de dados.",
+                exception.getMessage()
+        );
+
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    public void deveAtualizarQuandoIdExistir() {
+        UUID id = UUID.randomUUID();
+
+        Autor autor = new Autor();
+        autor.setId(id);
+        autor.setNome("João");
+
+        when(repository.save(autor)).thenReturn(autor);
+
+        service.atualizar(autor);
+
+        verify(repository).save(autor);
+    }
 }
