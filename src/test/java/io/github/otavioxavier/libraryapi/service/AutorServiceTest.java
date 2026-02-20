@@ -1,7 +1,10 @@
 package io.github.otavioxavier.libraryapi.service;
 
+import io.github.otavioxavier.libraryapi.exception.OperacaoNaoPermitidaException;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.repository.AutorRepository;
+import io.github.otavioxavier.libraryapi.validator.AutorTemLivrosValidator;
+import io.github.otavioxavier.libraryapi.validator.AutorValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,143 +26,124 @@ public class AutorServiceTest {
     @Mock
     private AutorRepository repository;
 
+    @Mock
+    private AutorValidator validator;
+
+    @Mock
+    private AutorTemLivrosValidator temLivrosValidator;
+
     @InjectMocks
     private AutorService service;
 
     @Test
-    public void DeveSalvar() {
+    void deveSalvarAutorQuandoValido() {
         Autor autor = new Autor();
         autor.setNome("Jhon V.");
         autor.setNacionalidade("Brasileiro");
         autor.setDataNascimento(LocalDate.of(1980, 1, 1));
 
         when(repository.save(autor)).thenReturn(autor);
-        Autor autorSalvo = service.saveAutor(autor);
 
-        assertNotNull(autorSalvo);
+        Autor resultado = service.saveAutor(autor);
 
+        verify(validator).validar(autor);
+        verify(repository).save(autor);
+        assertEquals(autor, resultado);
     }
 
     @Test
-    public void DeveRetornarAutorSeExistir() {
+    void deveRetornarAutorQuandoExistir() {
+        UUID id = UUID.randomUUID();
         Autor autor = new Autor();
-        autor.setNome("Jhon V.");
-        autor.setNacionalidade("Brasileiro");
-        autor.setDataNascimento(LocalDate.of(1980, 1, 1));
+        autor.setId(id);
 
-        service.saveAutor(autor);
-        when(repository.findById(autor.getId())).thenReturn(Optional.of(autor));
+        when(repository.findById(id)).thenReturn(Optional.of(autor));
 
-        Autor autorEncontrado = service.obterPorId(autor.getId()).orElse(null);
-        assertNotNull(autorEncontrado);
+        Optional<Autor> resultado = service.obterPorId(id);
+
+        assertTrue(resultado.isPresent());
+        assertEquals(autor, resultado.get());
+    }
+
+
+    @Test
+    void deveDeletarAutorQuandoNaoPossuirLivros() {
+        Autor autor = new Autor();
+        autor.setId(UUID.randomUUID());
+
+        doNothing().when(temLivrosValidator).validar(autor);
+
+        service.deletar(autor);
+
+        verify(temLivrosValidator).validar(autor);
+        verify(repository).delete(autor);
     }
 
     @Test
-    public void DeveRetornarNullSeNaoExistir() {
-        UUID idInexistente = UUID.randomUUID();
-        when(repository.findById(idInexistente)).thenReturn(Optional.empty());
+    void naoDeveDeletarQuandoAutorPossuirLivros() {
+        Autor autor = new Autor();
+        autor.setId(UUID.randomUUID());
 
-        Autor autorEncontrado = service.obterPorId(idInexistente).orElse(null);
-        assertNull(autorEncontrado);
+        doThrow(new OperacaoNaoPermitidaException("Erro"))
+                .when(temLivrosValidator)
+                .validar(autor);
+
+        assertThrows(
+                OperacaoNaoPermitidaException.class,
+                () -> service.deletar(autor)
+        );
+
+        verify(repository, never()).delete(any());
     }
 
     @Test
-    public void DeveDeletarAutor() {
-        UUID idExistente = UUID.randomUUID();
+    void devePesquisarPorNomeENacionalidade() {
+        service.pesquisar("Jhon", "Brasileiro");
 
-        service.deletar(idExistente);
-
-        verify(repository).deleteById(idExistente);
+        verify(repository).findByNomeAndNacionalidade("Jhon", "Brasileiro");
     }
 
     @Test
-    public void devePesquisarPorNomeENacionalidade() {
-        String nome = "João";
-        String nacionalidade = "Brasileiro";
+    void devePesquisarApenasPorNome() {
+        service.pesquisar("Jhon", null);
 
-        List<Autor> listaMock = List.of(new Autor());
-
-        when(repository.findByNomeAndNacionalidade(nome, nacionalidade))
-                .thenReturn(listaMock);
-
-        List<Autor> resultado = service.pesquisar(nome, nacionalidade);
-
-        assertEquals(1, resultado.size());
-        verify(repository).findByNomeAndNacionalidade(nome, nacionalidade);
+        verify(repository).findByNome("Jhon");
     }
 
     @Test
-    public void devePesquisarApenasPorNome() {
-        String nome = "João";
+    void devePesquisarApenasPorNacionalidade() {
+        service.pesquisar(null, "Brasileiro");
 
-        List<Autor> listaMock = List.of(new Autor());
-
-        when(repository.findByNome(nome))
-                .thenReturn(listaMock);
-
-        List<Autor> resultado = service.pesquisar(nome, null);
-
-        assertEquals(1, resultado.size());
-        verify(repository).findByNome(nome);
+        verify(repository).findByNacionalidade("Brasileiro");
     }
 
     @Test
-    public void devePesquisarApenasPorNacionalidade() {
-        String nacionalidade = "Brasileiro";
+    void devePesquisarTodosQuandoFiltrosNulos() {
+        service.pesquisar(null, null);
 
-        List<Autor> listaMock = List.of(new Autor());
-
-        when(repository.findByNacionalidade(nacionalidade))
-                .thenReturn(listaMock);
-
-        List<Autor> resultado = service.pesquisar(null, nacionalidade);
-
-        assertEquals(1, resultado.size());
-        verify(repository).findByNacionalidade(nacionalidade);
-    }
-
-    @Test
-    public void deveRetornarTodosQuandoFiltrosForemNulos() {
-        List<Autor> listaMock = List.of(new Autor(), new Autor());
-
-        when(repository.findAll()).thenReturn(listaMock);
-
-        List<Autor> resultado = service.pesquisar(null, null);
-
-        assertEquals(2, resultado.size());
         verify(repository).findAll();
     }
 
     @Test
-    public void deveLancarExcecaoQuandoIdForNull() {
+    void deveAtualizarAutorQuandoIdValido() {
         Autor autor = new Autor();
-        autor.setNome("João");
+        autor.setId(UUID.randomUUID());
 
-        IllegalArgumentException exception = assertThrows(
+        service.atualizar(autor);
+
+        verify(validator).validar(autor);
+        verify(repository).save(autor);
+    }
+
+    @Test
+    void deveLancarErroQuandoAtualizarSemId() {
+        Autor autor = new Autor();
+
+        assertThrows(
                 IllegalArgumentException.class,
                 () -> service.atualizar(autor)
         );
 
-        assertEquals(
-                "Para atualizar é necessário que o autor já esteja salvo na base de dados.",
-                exception.getMessage()
-        );
-
         verify(repository, never()).save(any());
-    }
-
-    @Test
-    public void deveAtualizarQuandoIdExistir() {
-        UUID id = UUID.randomUUID();
-
-        Autor autor = new Autor();
-        autor.setId(id);
-        autor.setNome("João");
-
-        when(repository.save(autor)).thenReturn(autor);
-
-        service.atualizar(autor);
-
-        verify(repository).save(autor);
     }
 }
