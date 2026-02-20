@@ -82,17 +82,23 @@ public class AutorController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> editar(@PathVariable String id, @RequestBody AutorDTO dto) {
-        UUID autorId = UUID.fromString(id);
-        Autor autor = service.obterPorId(autorId).orElse(null);
+    public ResponseEntity<Object> editar(@PathVariable String id, @RequestBody AutorDTO dto) {
+        try {
+            UUID autorId = UUID.fromString(id);
+            Autor autor = service.obterPorId(autorId).orElse(null);
 
-        if(autor == null)
-            return ResponseEntity.notFound().build();
+            if(autor == null)
+                return ResponseEntity.notFound().build();
 
-        Autor autorAtualizado = dto.mapearParaAutor();
+            Autor autorAtualizado = dto.mapearParaAutor();
 
-        service.atualizar(autorAtualizado);
-        return ResponseEntity.noContent().build();
+            service.atualizar(autorAtualizado);
+            return ResponseEntity.noContent().build();
+        } catch (RegistroDuplicadoException e) {
+            var erroDTO = ErroResposta.conflito(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
+
 
     }
 }
