@@ -23,7 +23,7 @@ public class AutorValidator {
     }
 
     private boolean existe(Autor autor) {
-        Optional<Autor> autorEncontrado = autorRepository.findByNomeAndNacionalidadeAnDataNascimento(autor.getNome(), autor.getNacionalidade(), autor.getDataNascimento());
+        Optional<Autor> autorEncontrado = autorRepository.findByNomeAndNacionalidadeAndDataNascimento(autor.getNome(), autor.getNacionalidade(), autor.getDataNascimento());
         if(autor.getId() == null) {
             return autorEncontrado.isPresent();
         }

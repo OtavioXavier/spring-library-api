@@ -32,7 +32,7 @@ public class AutorValidatorTest {
         autor.setNacionalidade("Brasileiro");
         autor.setDataNascimento(LocalDate.of(1990, 1, 1));
 
-        when(repository.findByNomeAndNacionalidadeAnDataNascimento(
+        when(repository.findByNomeAndNacionalidadeAndDataNascimento(
                 autor.getNome(),
                 autor.getNacionalidade(),
                 autor.getDataNascimento()
@@ -48,7 +48,7 @@ public class AutorValidatorTest {
         autor.setNacionalidade("Brasileiro");
         autor.setDataNascimento(LocalDate.of(1990, 1, 1));
 
-        when(repository.findByNomeAndNacionalidadeAnDataNascimento(
+        when(repository.findByNomeAndNacionalidadeAndDataNascimento(
                 autor.getNome(),
                 autor.getNacionalidade(),
                 autor.getDataNascimento()
@@ -73,7 +73,7 @@ public class AutorValidatorTest {
         Autor autorBanco = new Autor();
         autorBanco.setId(id);
 
-        when(repository.findByNomeAndNacionalidadeAnDataNascimento(
+        when(repository.findByNomeAndNacionalidadeAndDataNascimento(
                 autor.getNome(),
                 autor.getNacionalidade(),
                 autor.getDataNascimento()
