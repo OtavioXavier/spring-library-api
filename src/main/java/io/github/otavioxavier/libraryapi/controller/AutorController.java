@@ -87,7 +87,7 @@ public class AutorController {
         List<Autor> list = service.pesquisarPorExemplo(nome, nacionalidade);
         List<AutorResponseDTO> listDTO = list
                 .stream()
-                .map(autor -> new AutorResponseDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade()))
+                .map(mapper::toDTO)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(listDTO);
