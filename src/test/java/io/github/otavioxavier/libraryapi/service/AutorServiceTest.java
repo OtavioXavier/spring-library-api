@@ -98,28 +98,28 @@ public class AutorServiceTest {
 
     @Test
     void devePesquisarPorNomeENacionalidade() {
-        service.pesquisar("Jhon", "Brasileiro");
+        service.pesquisarPorExemplo("Jhon", "Brasileiro");
 
         verify(repository).findByNomeAndNacionalidade("Jhon", "Brasileiro");
     }
 
     @Test
     void devePesquisarApenasPorNome() {
-        service.pesquisar("Jhon", null);
+        service.pesquisarPorExemplo("Jhon", null);
 
         verify(repository).findByNome("Jhon");
     }
 
     @Test
     void devePesquisarApenasPorNacionalidade() {
-        service.pesquisar(null, "Brasileiro");
+        service.pesquisarPorExemplo(null, "Brasileiro");
 
         verify(repository).findByNacionalidade("Brasileiro");
     }
 
     @Test
     void devePesquisarTodosQuandoFiltrosNulos() {
-        service.pesquisar(null, null);
+        service.pesquisarPorExemplo(null, null);
 
         verify(repository).findAll();
     }

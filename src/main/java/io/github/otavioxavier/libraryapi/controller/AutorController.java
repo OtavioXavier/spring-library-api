@@ -3,11 +3,13 @@ package io.github.otavioxavier.libraryapi.controller;
 import io.github.otavioxavier.libraryapi.controller.dto.AutorDTO;
 import io.github.otavioxavier.libraryapi.controller.dto.AutorResponseDTO;
 import io.github.otavioxavier.libraryapi.controller.error.ErroResposta;
+import io.github.otavioxavier.libraryapi.controller.mapper.AutorMapper;
 import io.github.otavioxavier.libraryapi.exception.OperacaoNaoPermitidaException;
 import io.github.otavioxavier.libraryapi.exception.RegistroDuplicadoException;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.service.AutorService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +22,17 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/autores")
+@RequiredArgsConstructor
 public class AutorController {
 
-    @Autowired
-    private AutorService service;
+    private final AutorService service;
+    private final AutorMapper mapper;
 
     @PostMapping
     public ResponseEntity<Object> createAutor(@RequestBody @Valid AutorDTO dto) {
         try {
-            Autor autor = service.saveAutor(dto.mapearParaAutor());
+            Autor autor = mapper.toEntity(dto);
+            service.saveAutor(autor);
 
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
@@ -46,14 +50,13 @@ public class AutorController {
     @GetMapping("{id}")
     public ResponseEntity<AutorResponseDTO> obterDetalhes(@PathVariable String id) {
         UUID autorId = UUID.fromString(id);
-        Autor autor = service.obterPorId(autorId).orElse(null);
 
-        if(autor != null) {
-            AutorResponseDTO dto = new AutorResponseDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade());
-            return ResponseEntity.ok(dto);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return service.obterPorId(autorId)
+                .map(autor -> {
+                    AutorResponseDTO dto = mapper.toDTO(autor);
+                    return ResponseEntity.ok(dto);
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("{id}")
@@ -99,7 +102,7 @@ public class AutorController {
             if(autor == null)
                 return ResponseEntity.notFound().build();
 
-            Autor autorAtualizado = dto.mapearParaAutor();
+            Autor autorAtualizado = mapper.toEntity(dto);
 
             service.atualizar(autorAtualizado);
             return ResponseEntity.noContent().build();

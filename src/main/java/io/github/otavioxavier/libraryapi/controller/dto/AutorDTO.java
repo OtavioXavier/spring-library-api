@@ -17,13 +17,4 @@ public record AutorDTO(
         LocalDate dataNascimento,
         @NotBlank(message = "Nacionalidade é obrigatório")
         @Size(min = 2, max = 50, message = "Tamanho válido da nacionalidade: 2 ˜ 50")
-        String nacionalidade) {
-
-    public Autor mapearParaAutor() {
-        Autor autor = new Autor();
-        autor.setNome(this.nome);
-        autor.setDataNascimento(this.dataNascimento);
-        autor.setNacionalidade(this.nacionalidade);
-        return autor;
-    }
-}
+        String nacionalidade) {}
