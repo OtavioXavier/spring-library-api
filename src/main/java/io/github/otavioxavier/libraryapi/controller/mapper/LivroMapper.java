@@ -13,6 +13,10 @@ public abstract class LivroMapper {
     @Autowired
     AutorRepository autorRepository;
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dataCadastro", ignore = true)
+    @Mapping(target = "dataAtualizacao", ignore = true)
+    @Mapping(target = "idUsuario", ignore = true)
     @Mapping(target = "autor", expression = "java( autorRepository.findById( dto.idAutor() ).orElse( null ) )")
     public abstract Livro toEntity(CadastroLivroDTO dto);
 }

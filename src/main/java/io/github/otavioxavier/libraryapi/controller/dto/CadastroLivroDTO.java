@@ -19,6 +19,7 @@ public record CadastroLivroDTO(
         @NotNull(message = "Data de publicação é obrigatório")
         @Past(message = "Data de publicação não pode ser uma data futura")
         LocalDate dataPublicacao,
+        @NotNull(message = "Género é obrigatório")
         GeneroLivro genero,
         BigDecimal preco,
         @NotNull(message = "Autor é obrigatório")
