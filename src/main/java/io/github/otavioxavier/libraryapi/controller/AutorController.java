@@ -81,8 +81,8 @@ public class AutorController {
 
     @GetMapping
     public ResponseEntity<List<AutorResponseDTO>> listar(
-            @PathVariable(value = "nome", required = false) String nome,
-            @PathVariable(value = "nacionalidade", required = false) String nacionalidade
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "nacionalidade", required = false) String nacionalidade
     ) {
         List<Autor> list = service.pesquisarPorExemplo(nome, nacionalidade);
         List<AutorResponseDTO> listDTO = list
