@@ -39,4 +39,13 @@ public class GlobalExceptionHandler {
     public ErroResposta handleOperacaoNaoPermitidaException(final OperacaoNaoPermitidaException e) {
         return ErroResposta.conflito(e.getMessage());
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErroResposta handleGenericException(final RuntimeException e) {
+        return new ErroResposta(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Ocorreu um erro inesperado, entre em contato com a administração",
+                List.of());
+    }
 }
