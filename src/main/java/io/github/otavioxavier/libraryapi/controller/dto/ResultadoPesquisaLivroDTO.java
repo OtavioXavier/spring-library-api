@@ -11,7 +11,7 @@ public record ResultadoPesquisaLivroDTO(
         String isbn,
         String titulo,
         LocalDate dataPublicacao,
-        GeneroLivro generoLivro,
+        GeneroLivro genero,
         BigDecimal preco,
         AutorDTO autor
 ) {
