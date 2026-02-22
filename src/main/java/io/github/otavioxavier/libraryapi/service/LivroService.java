@@ -3,12 +3,10 @@ package io.github.otavioxavier.libraryapi.service;
 import io.github.otavioxavier.libraryapi.model.GeneroLivro;
 import io.github.otavioxavier.libraryapi.model.Livro;
 import io.github.otavioxavier.libraryapi.repository.LivroRepository;
-import io.github.otavioxavier.libraryapi.repository.specs.LivroSpecs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
