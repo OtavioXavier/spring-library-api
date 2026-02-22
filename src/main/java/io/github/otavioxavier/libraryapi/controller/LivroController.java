@@ -3,15 +3,20 @@ package io.github.otavioxavier.libraryapi.controller;
 import io.github.otavioxavier.libraryapi.controller.dto.CadastroLivroDTO;
 import io.github.otavioxavier.libraryapi.controller.dto.ResultadoPesquisaLivroDTO;
 import io.github.otavioxavier.libraryapi.controller.mapper.LivroMapper;
+import io.github.otavioxavier.libraryapi.model.GeneroLivro;
 import io.github.otavioxavier.libraryapi.model.Livro;
 import io.github.otavioxavier.libraryapi.service.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,11 +24,11 @@ import java.util.UUID;
 public class LivroController implements GenericController {
 
     private final LivroService service;
-    private final LivroMapper livroMapper;
+    private final LivroMapper mapper;
 
     @PostMapping
     public ResponseEntity<Object> salvar(@RequestBody @Valid CadastroLivroDTO dto) {
-        Livro livro = livroMapper.toEntity(dto);
+        Livro livro = mapper.toEntity(dto);
         service.salvar(livro);
         URI location = generateHeaderLocation(livro.getId());
         return ResponseEntity.created(location).build();
@@ -33,9 +38,26 @@ public class LivroController implements GenericController {
     public ResponseEntity<ResultadoPesquisaLivroDTO> obterDetalhes(@PathVariable String id) {
         return service.obterPorId(UUID.fromString(id))
                 .map(livro -> {
-                    ResultadoPesquisaLivroDTO dto = livroMapper.toDTO(livro);
+                    ResultadoPesquisaLivroDTO dto = mapper.toDTO(livro);
                     return ResponseEntity.ok(dto);
                 }).orElseGet( () -> ResponseEntity.notFound().build() );
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResultadoPesquisaLivroDTO>> obterDetalhes(
+            @RequestParam(value = "isbn", required = false)
+            String isbn,
+            @RequestParam(value = "genero", required = false)
+            GeneroLivro genero,
+            @RequestParam(value = "titulo", required = false)
+            String titulo,
+            @RequestParam(value = "nome-autor", required = false)
+            String nomeAutor,
+            @RequestParam(value = "ano-publicacao", required = false)
+            Integer anoPublicacao) {
+        var resultado = service.pesquisar(isbn, titulo, nomeAutor, genero, anoPublicacao);
+        var lista = resultado.stream().map(mapper::toDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
     }
 
     @DeleteMapping("{id}")
