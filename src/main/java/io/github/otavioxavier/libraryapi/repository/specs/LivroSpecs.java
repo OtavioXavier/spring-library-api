@@ -26,8 +26,6 @@ public class LivroSpecs {
     }
 
     public static Specification<Livro> nomeAutorLike(final String nomeAutor) {
-        return (root, query, cb) -> {
-            return cb.like(cb.lower(root.get("autor").get("nome")), "%" + nomeAutor.toLowerCase() + "%");
-        };
+        return (root, query, cb) -> cb.like(cb.lower(root.get("autor").get("nome")), "%" + nomeAutor.toLowerCase() + "%");
     }
 }
