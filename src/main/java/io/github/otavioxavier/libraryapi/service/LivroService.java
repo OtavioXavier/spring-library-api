@@ -3,6 +3,7 @@ package io.github.otavioxavier.libraryapi.service;
 import io.github.otavioxavier.libraryapi.model.GeneroLivro;
 import io.github.otavioxavier.libraryapi.model.Livro;
 import io.github.otavioxavier.libraryapi.repository.LivroRepository;
+import io.github.otavioxavier.libraryapi.validator.LivroTemDuplicataValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,10 @@ import static io.github.otavioxavier.libraryapi.repository.specs.LivroSpecs.*;
 public class LivroService {
 
     private final LivroRepository repository;
+    private final LivroTemDuplicataValidator validator;
 
     public Livro salvar(Livro livro) {
+        validator.validar(livro);
         return repository.save(livro);
     }
 
@@ -40,25 +43,26 @@ public class LivroService {
         Specification<Livro> specs = Specification
                 .where((root, query, cb) -> cb.conjunction());
 
-        if(isbn != null && !isbn.isEmpty()) {
+        if (isbn != null && !isbn.isEmpty()) {
             specs = specs.and(isbnEqual(isbn));
         }
-        if(genero != null) {
+        if (genero != null) {
             specs = specs.and(generoEqual(genero));
         }
-        if(titulo != null && !titulo.isEmpty()) {
+        if (titulo != null && !titulo.isEmpty()) {
             specs = specs.and(tituloLike(titulo));
         }
-        if(anoPublicacao != null) {
+        if (anoPublicacao != null) {
             specs = specs.and(anoPublicacapEqual(anoPublicacao));
         }
-        if(nomeAutor != null) {
+        if (nomeAutor != null) {
             specs = specs.and(nomeAutorLike(nomeAutor));
         }
         return repository.findAll(specs);
     }
 
     public Livro atualizar(Livro livro) {
+        validator.validar(livro);
         if (livro.getId() == null)
             throw new IllegalArgumentException("Para atualizar é necessário que o livro já esteja salvo na base de dados.");
 

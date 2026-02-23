@@ -61,6 +61,7 @@ public class LivroController implements GenericController {
     @PutMapping("{id}")
     public ResponseEntity<Object> atualizar(@PathVariable String id,
                                             @RequestBody @Valid CadastroLivroDTO dto) {
+
         return service.obterPorId(UUID.fromString(id))
                 .map(livro -> {
                    Livro entidade = mapper.toEntity(dto);
