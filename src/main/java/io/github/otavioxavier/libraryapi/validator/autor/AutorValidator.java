@@ -1,4 +1,4 @@
-package io.github.otavioxavier.libraryapi.validator;
+package io.github.otavioxavier.libraryapi.validator.autor;
 
 import io.github.otavioxavier.libraryapi.exception.RegistroDuplicadoException;
 import io.github.otavioxavier.libraryapi.model.Autor;

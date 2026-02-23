@@ -3,6 +3,7 @@ package io.github.otavioxavier.libraryapi.validator;
 import io.github.otavioxavier.libraryapi.exception.RegistroDuplicadoException;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.repository.AutorRepository;
+import io.github.otavioxavier.libraryapi.validator.autor.AutorValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

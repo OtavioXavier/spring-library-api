@@ -2,8 +2,8 @@ package io.github.otavioxavier.libraryapi.service;
 
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.repository.AutorRepository;
-import io.github.otavioxavier.libraryapi.validator.AutorTemLivrosValidator;
-import io.github.otavioxavier.libraryapi.validator.AutorValidator;
+import io.github.otavioxavier.libraryapi.validator.autor.AutorTemLivrosValidator;
+import io.github.otavioxavier.libraryapi.validator.autor.AutorValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;

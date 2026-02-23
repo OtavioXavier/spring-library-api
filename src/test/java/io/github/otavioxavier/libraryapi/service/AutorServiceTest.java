@@ -3,17 +3,15 @@ package io.github.otavioxavier.libraryapi.service;
 import io.github.otavioxavier.libraryapi.exception.OperacaoNaoPermitidaException;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.repository.AutorRepository;
-import io.github.otavioxavier.libraryapi.validator.AutorTemLivrosValidator;
-import io.github.otavioxavier.libraryapi.validator.AutorValidator;
+import io.github.otavioxavier.libraryapi.validator.autor.AutorTemLivrosValidator;
+import io.github.otavioxavier.libraryapi.validator.autor.AutorValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

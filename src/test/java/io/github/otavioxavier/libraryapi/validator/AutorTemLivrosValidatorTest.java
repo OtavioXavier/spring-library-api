@@ -3,6 +3,7 @@ package io.github.otavioxavier.libraryapi.validator;
 import io.github.otavioxavier.libraryapi.exception.OperacaoNaoPermitidaException;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.repository.LivroRepository;
+import io.github.otavioxavier.libraryapi.validator.autor.AutorTemLivrosValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
