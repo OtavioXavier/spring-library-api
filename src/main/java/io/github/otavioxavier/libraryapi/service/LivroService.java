@@ -6,10 +6,12 @@ import io.github.otavioxavier.libraryapi.repository.LivroRepository;
 import io.github.otavioxavier.libraryapi.validator.livro.LivroPrecoObrigatorioValidator;
 import io.github.otavioxavier.libraryapi.validator.livro.LivroTemDuplicataValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,12 +39,15 @@ public class LivroService {
         repository.delete(livro);
     }
 
-    public List<Livro> pesquisar(
+    public Page<Livro> pesquisar(
             String isbn,
             String titulo,
             String nomeAutor,
             GeneroLivro genero,
-            Integer anoPublicacao) {
+            Integer anoPublicacao,
+            Integer pagina,
+            Integer tamanhoPagina
+    ) {
         Specification<Livro> specs = Specification
                 .where((root, query, cb) -> cb.conjunction());
 
@@ -61,7 +66,10 @@ public class LivroService {
         if (nomeAutor != null) {
             specs = specs.and(nomeAutorLike(nomeAutor));
         }
-        return repository.findAll(specs);
+
+        Pageable pageRequest = PageRequest.of(pagina, tamanhoPagina);
+
+        return repository.findAll(specs, pageRequest);
     }
 
     public void atualizar(Livro livro) {

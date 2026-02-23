@@ -8,11 +8,11 @@ import io.github.otavioxavier.libraryapi.model.Livro;
 import io.github.otavioxavier.libraryapi.service.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -42,7 +42,7 @@ public class LivroController implements GenericController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResultadoPesquisaLivroDTO>> obterDetalhes(
+    public ResponseEntity<Page<ResultadoPesquisaLivroDTO>> obterDetalhes(
             @RequestParam(value = "isbn", required = false)
             String isbn,
             @RequestParam(value = "genero", required = false)
@@ -52,10 +52,15 @@ public class LivroController implements GenericController {
             @RequestParam(value = "nome-autor", required = false)
             String nomeAutor,
             @RequestParam(value = "ano-publicacao", required = false)
-            Integer anoPublicacao) {
-        var resultado = service.pesquisar(isbn, titulo, nomeAutor, genero, anoPublicacao);
-        var lista = resultado.stream().map(mapper::toDTO).collect(Collectors.toList());
-        return ResponseEntity.ok(lista);
+            Integer anoPublicacao,
+            @RequestParam(value = "pagina", defaultValue = "0")
+            Integer pagina,
+            @RequestParam(value = "tamanho-pagina", defaultValue = "10")
+            Integer tamanhoPagina
+    ) {
+        Page<Livro> paginaResultado = service.pesquisar(isbn, titulo, nomeAutor, genero, anoPublicacao, pagina, tamanhoPagina);
+        Page<ResultadoPesquisaLivroDTO> listagem = paginaResultado.map(mapper::toDTO);
+        return ResponseEntity.ok(listagem);
     }
 
     @PutMapping("{id}")
