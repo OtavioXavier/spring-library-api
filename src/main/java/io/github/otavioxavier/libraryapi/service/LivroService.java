@@ -3,7 +3,8 @@ package io.github.otavioxavier.libraryapi.service;
 import io.github.otavioxavier.libraryapi.model.GeneroLivro;
 import io.github.otavioxavier.libraryapi.model.Livro;
 import io.github.otavioxavier.libraryapi.repository.LivroRepository;
-import io.github.otavioxavier.libraryapi.validator.LivroTemDuplicataValidator;
+import io.github.otavioxavier.libraryapi.validator.livro.LivroPrecoObrigatorioValidator;
+import io.github.otavioxavier.libraryapi.validator.livro.LivroTemDuplicataValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,11 @@ public class LivroService {
 
     private final LivroRepository repository;
     private final LivroTemDuplicataValidator validator;
+    private final LivroPrecoObrigatorioValidator precoObrigatorioValidator;
 
     public Livro salvar(Livro livro) {
         validator.validar(livro);
+        precoObrigatorioValidator.validar(livro);
         return repository.save(livro);
     }
 
@@ -63,6 +66,7 @@ public class LivroService {
 
     public void atualizar(Livro livro) {
         validator.validar(livro);
+        precoObrigatorioValidator.validar(livro);
         if (livro.getId() == null)
             throw new IllegalArgumentException("Para atualizar é necessário que o livro já esteja salvo na base de dados.");
 
