@@ -35,7 +35,7 @@ public class Livro {
     @Enumerated(EnumType.STRING)
     private GeneroLivro genero;
 
-    @Column(name = "preco", precision = 18, scale = 2,nullable = false)
+    @Column(name = "preco", precision = 18, scale = 2)
     private BigDecimal preco;
 
     @ManyToOne
