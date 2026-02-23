@@ -1,5 +1,6 @@
 package io.github.otavioxavier.libraryapi.controller.error;
 
+import io.github.otavioxavier.libraryapi.exception.CampoInvalidoException;
 import io.github.otavioxavier.libraryapi.exception.OperacaoNaoPermitidaException;
 import io.github.otavioxavier.libraryapi.exception.RegistroDuplicadoException;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErroResposta handleOperacaoNaoPermitidaException(final OperacaoNaoPermitidaException e) {
         return ErroResposta.conflito(e.getMessage());
+    }
+
+    @ExceptionHandler(CampoInvalidoException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErroResposta handleCampoInvalidoException(final CampoInvalidoException e) {
+        return new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Erro de validação",  List.of(new ErroCampo(e.getCampo(), e.getMessage())));
     }
 
     @ExceptionHandler(RuntimeException.class)
