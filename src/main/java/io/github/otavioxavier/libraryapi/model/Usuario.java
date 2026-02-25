@@ -1,7 +1,9 @@
 package io.github.otavioxavier.libraryapi.model;
 
+import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class Usuario {
     private String login;
     private String password;
 
-    @Column(name = "roles")
+    @Type(ListArrayType.class)
+    @Column(name = "roles", columnDefinition = "varchar[]")
     private List<String> roles;
 }

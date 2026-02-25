@@ -62,6 +62,13 @@
 			<version>${mapstruct.version}</version>
 		</dependency>
 
+		<!-- hypersistence -->
+		<dependency>
+			<groupId>io.hypersistence</groupId>
+			<artifactId>hypersistence-utils-hibernate-63</artifactId>
+			<version>3.15.2</version>
+		</dependency>
+
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
