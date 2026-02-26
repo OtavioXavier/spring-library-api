@@ -16,7 +16,7 @@ public class Usuario {
     private int id;
 
     private String login;
-    private String password;
+    private String senha;
 
     @Type(ListArrayType.class)
     @Column(name = "roles", columnDefinition = "varchar[]")
