@@ -8,6 +8,7 @@ import io.github.otavioxavier.libraryapi.service.AutorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -24,6 +25,7 @@ public class AutorController implements GenericController {
     private final AutorMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('GERENTE')")
     public ResponseEntity<Void> createAutor(@RequestBody @Valid AutorDTO dto) {
         Autor autor = mapper.toEntity(dto);
         service.saveAutor(autor);
@@ -32,6 +34,7 @@ public class AutorController implements GenericController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<AutorResponseDTO> obterDetalhes(@PathVariable String id) {
         UUID autorId = UUID.fromString(id);
         return service.obterPorId(autorId)
@@ -43,6 +46,7 @@ public class AutorController implements GenericController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAnyRole('GERENTE')")
     public ResponseEntity<Void> deletar(@PathVariable String id) {
         UUID autorId = UUID.fromString(id);
         Autor autor = service.obterPorId(autorId).orElse(null);
@@ -55,6 +59,7 @@ public class AutorController implements GenericController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<List<AutorResponseDTO>> listar(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "nacionalidade", required = false) String nacionalidade
@@ -68,6 +73,7 @@ public class AutorController implements GenericController {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAnyRole('GERENTE')")
     public ResponseEntity<Void> editar(@PathVariable String id, @RequestBody @Valid AutorDTO dto) {
         UUID autorId = UUID.fromString(id);
         Autor autor = service.obterPorId(autorId).orElse(null);
