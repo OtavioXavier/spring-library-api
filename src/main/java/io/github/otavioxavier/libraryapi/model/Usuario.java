@@ -6,6 +6,7 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "usuario")
@@ -13,7 +14,7 @@ import java.util.List;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private int id;
+    private UUID id;
 
     private String login;
     private String senha;
