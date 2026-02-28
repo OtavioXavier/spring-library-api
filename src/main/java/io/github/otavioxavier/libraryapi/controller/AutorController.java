@@ -5,6 +5,7 @@ import io.github.otavioxavier.libraryapi.controller.dto.AutorResponseDTO;
 import io.github.otavioxavier.libraryapi.controller.mapper.AutorMapper;
 import io.github.otavioxavier.libraryapi.model.Autor;
 import io.github.otavioxavier.libraryapi.model.Usuario;
+import io.github.otavioxavier.libraryapi.security.SecurityService;
 import io.github.otavioxavier.libraryapi.service.AutorService;
 import io.github.otavioxavier.libraryapi.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -26,16 +27,12 @@ import java.util.stream.Collectors;
 public class AutorController implements GenericController {
 
     private final AutorService service;
-    private final UsuarioService usuarioService;
     private final AutorMapper mapper;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('GERENTE')")
     public ResponseEntity<Void> createAutor(@RequestBody @Valid AutorDTO dto, Authentication auth) {
-        UserDetails user = (UserDetails) auth.getPrincipal();
-        Usuario usuario = usuarioService.obterPorLogin(user.getUsername());
         Autor autor = mapper.toEntity(dto);
-        autor.setIdUsuario(usuario.getId());
         service.saveAutor(autor);
         URI location = generateHeaderLocation(autor.getId());
         return ResponseEntity.created(location).build();

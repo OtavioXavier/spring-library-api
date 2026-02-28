@@ -1,7 +1,9 @@
 package io.github.otavioxavier.libraryapi.service;
 
 import io.github.otavioxavier.libraryapi.model.Autor;
+import io.github.otavioxavier.libraryapi.model.Usuario;
 import io.github.otavioxavier.libraryapi.repository.AutorRepository;
+import io.github.otavioxavier.libraryapi.security.SecurityService;
 import io.github.otavioxavier.libraryapi.validator.autor.AutorTemLivrosValidator;
 import io.github.otavioxavier.libraryapi.validator.autor.AutorValidator;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,13 @@ public class AutorService {
     private final AutorRepository repository;
     private final AutorValidator validator;
     private final AutorTemLivrosValidator temLivrosValidator;
+    private final SecurityService securityService;
 
 
     public Autor saveAutor(Autor autor) {
         validator.validar(autor);
+        Usuario usuarioLogado = securityService.obterUsuarioLogado();
+        autor.setIdUsuario(usuarioLogado.getId());
         return repository.save(autor);
     }
 
