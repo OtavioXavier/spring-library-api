@@ -2,7 +2,9 @@ package io.github.otavioxavier.libraryapi.service;
 
 import io.github.otavioxavier.libraryapi.model.GeneroLivro;
 import io.github.otavioxavier.libraryapi.model.Livro;
+import io.github.otavioxavier.libraryapi.model.Usuario;
 import io.github.otavioxavier.libraryapi.repository.LivroRepository;
+import io.github.otavioxavier.libraryapi.security.SecurityService;
 import io.github.otavioxavier.libraryapi.validator.livro.LivroPrecoObrigatorioValidator;
 import io.github.otavioxavier.libraryapi.validator.livro.LivroTemDuplicataValidator;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +26,12 @@ public class LivroService {
     private final LivroRepository repository;
     private final LivroTemDuplicataValidator validator;
     private final LivroPrecoObrigatorioValidator precoObrigatorioValidator;
+    private final SecurityService securityService;
 
     public Livro salvar(Livro livro) {
         validator.validar(livro);
+       Usuario usuarioLogado = securityService.obterUsuarioLogado();
+       livro.setUsuario(usuarioLogado);
         precoObrigatorioValidator.validar(livro);
         return repository.save(livro);
     }
